@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PraktisIn – Kalkulator Harian</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--ink:#151a33;--mut:#666d8a;--line:#e4e7f2;--inp:#f7f8fd;--pri:#4f46e5;--acc:#f59e0b;--g1:#4f46e5;--g2:#7c3aed;--ok:#059669;--bad:#dc2626;--sh:0 1px 2px #151a3310,0 8px 24px #151a330d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0f1c;--card:#151832;--ink:#eceefb;--mut:#9aa1c4;--line:#272b4d;--inp:#0f1226;--pri:#818cf8;--g1:#4338ca;--g2:#6d28d9;--ok:#34d399;--bad:#f87171;--sh:0 1px 2px #0008}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+.w{max-width:1000px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.8px}h1 span{color:var(--pri)}.sub{color:var(--mut);margin:4px 0 18px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px}.tabs button{flex:0 0 auto;padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);font:600 13px inherit;font-family:inherit;color:var(--mut);cursor:pointer}.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 6px 16px #4f46e540}
+.tool{display:none}.tool.on{display:block}.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--sh)}.card h2{font-size:16px;margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;color:var(--mut);margin:12px 0 5px}label:first-of-type{margin-top:0}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--inp);color:var(--ink);font:600 15px inherit;font-family:inherit}input:focus,select:focus{outline:2px solid var(--pri);outline-offset:1px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0}.res small{opacity:.8;font-size:12px}.res .big{font-size:clamp(26px,5vw,34px);font-weight:800;letter-spacing:-.5px;margin:2px 0 12px;word-break:break-word}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #ffffff2a;font-size:13px}.kv b{text-align:right}
+.plain .kv{border-top:1px solid var(--line)}.plain .kv:first-child{border-top:0}.plain .kv span{color:var(--mut)}
+.bar{height:8px;border-radius:5px;background:#ffffff40;overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;background:var(--acc)}
+.tw{overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{position:sticky;top:0;background:var(--inp);padding:9px 10px;text-align:right;color:var(--mut);font-size:11px;text-transform:uppercase}td{padding:8px 10px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}
+.btn{padding:10px 16px;border-radius:10px;border:0;background:var(--pri);color:#fff;font:700 13px inherit;font-family:inherit;cursor:pointer}.btn.o{background:none;border:1px solid var(--line);color:var(--ink)}.btn.sm{padding:6px 10px}
+.mut{color:var(--mut)}.hint{font-size:12px;color:var(--mut);margin-top:10px;line-height:1.5}.stack{display:grid;gap:16px}.out{margin-top:14px;border-radius:12px;background:var(--inp);padding:4px 14px}.out .kv{border-color:var(--line)}.out .kv:first-child{border:0}.out .kv span{color:var(--mut)}
+.cr{display:grid;grid-template-columns:2fr 70px 90px auto;gap:8px;margin-bottom:8px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.cr{grid-template-columns:1fr 60px 80px auto}}
+</style></head><body><div class="w">
+<h1>Praktis<span>In</span></h1><p class="sub">Kalkulator harian: cicilan, tanggal, diskon, konversi satuan, dan IPK.</p>
+<nav class="tabs" id="tabs"></nav>
+
+<section id="t-loan" class="tool on"><div class="grid"><div class="card"><h2>💳 Kalkulator Cicilan</h2>
+<label>Jumlah pinjaman (Rp)</label><input type="number" id="l_p" value="100000000" inputmode="decimal" oninput="loan()">
+<div class="g2"><div><label>Bunga per tahun (%)</label><input type="number" id="l_b" value="9" step="0.1" oninput="loan()"></div><div><label>Tenor (bulan)</label><input type="number" id="l_n" value="60" min="1" oninput="loan()"></div></div>
+<label>Metode bunga</label><select id="l_m" onchange="loan()"><option value="anuitas">Anuitas / efektif (bunga turun tiap bulan)</option><option value="flat">Flat (bunga tetap dari pokok awal)</option></select>
+<p class="hint">Flat biasa dipakai kredit kendaraan, anuitas untuk KPR. Hasil adalah perkiraan, belum termasuk biaya admin, provisi, dan asuransi.</p></div><div class="card res" id="loanR"></div></div>
+<div class="card"><h2>Jadwal Angsuran</h2><div class="tw" id="loanT"></div></div></section>
+
+<section id="t-date" class="tool"><div class="grid"><div class="card"><h2>🎂 Umur &amp; Ulang Tahun</h2><label>Tanggal lahir</label><input type="date" id="d_lahir" oninput="age()"><div class="out" id="ageR"></div></div>
+<div class="card"><h2>↔️ Selisih Dua Tanggal</h2><div class="g2"><div><label>Dari</label><input type="date" id="d_a" oninput="diff()"></div><div><label>Sampai</label><input type="date" id="d_b" oninput="diff()"></div></div><div class="out" id="diffR"></div></div></div>
+<div class="card" style="max-width:495px"><h2>➕ Tambah / Kurang Hari</h2><div class="g2"><div><label>Tanggal awal</label><input type="date" id="d_c" oninput="addd()"></div><div><label>Jumlah hari</label><input type="number" id="d_n" value="45" oninput="addd()"></div></div><label>Operasi</label><select id="d_op" onchange="addd()"><option value="1">Tambah (ke depan)</option><option value="-1">Kurangi (ke belakang)</option></select><div class="out" id="addR"></div></div></section>
+
+<section id="t-disc" class="tool"><div class="grid"><div class="card"><h2>🏷️ Diskon &amp; PPN</h2><label>Harga awal (Rp)</label><input type="number" id="s_p" value="500000" oninput="disc()">
+<div class="g2"><div><label>Diskon 1 (%)</label><input type="number" id="s_d1" value="20" oninput="disc()"></div><div><label>Diskon tambahan (%)</label><input type="number" id="s_d2" value="10" oninput="disc()"></div></div><label>PPN (%)</label><input type="number" id="s_ppn" value="11" oninput="disc()"></div><div class="card res" id="discR"></div></div>
+<div class="grid"><div class="card"><h2>% Persentase Cepat</h2>
+<label>Berapa X% dari Y?</label><div class="g2"><input type="number" id="q_x1" value="15" oninput="perc()"><input type="number" id="q_y1" value="200000" oninput="perc()"></div><div class="hint" id="q_r1"></div>
+<label>X adalah berapa persen dari Y?</label><div class="g2"><input type="number" id="q_x2" value="30" oninput="perc()"><input type="number" id="q_y2" value="120" oninput="perc()"></div><div class="hint" id="q_r2"></div>
+<label>Naik / turun dari A ke B</label><div class="g2"><input type="number" id="q_x3" value="80000" oninput="perc()"><input type="number" id="q_y3" value="100000" oninput="perc()"></div><div class="hint" id="q_r3"></div></div>
+<div class="card"><h2>📈 Untung &amp; Margin</h2><div class="g2"><div><label>Harga modal (Rp)</label><input type="number" id="m_b" value="60000" oninput="marg()"></div><div><label>Harga jual (Rp)</label><input type="number" id="m_j" value="85000" oninput="marg()"></div></div><div class="out plain" id="margR"></div>
+<label style="margin-top:16px">Target margin (%) untuk harga jual</label><input type="number" id="m_t" value="30" oninput="marg()"><div class="hint" id="margT"></div></div></div></section>
+
+<section id="t-conv" class="tool"><div class="grid"><div class="card"><h2>📐 Konversi Satuan</h2><label>Kategori</label><select id="c_k" onchange="fillConv()"></select>
+<label>Nilai</label><input type="number" id="c_v" value="1" oninput="conv()"><div class="g2"><div><label>Dari</label><select id="c_f" onchange="conv()"></select></div><div><label>Ke</label><select id="c_t" onchange="conv()"></select></div></div>
+<button class="btn o sm" style="margin-top:12px" onclick="swap()">⇅ Tukar satuan</button></div><div class="card res" id="convR"></div></div><div class="card"><h2>Semua Satuan</h2><div class="tw" id="convT"></div></div></section>
+
+<section id="t-ipk" class="tool"><div class="grid"><div class="card"><h2>🎓 Kalkulator IPK / IPS</h2><div id="ipkRows"></div><button class="btn o sm" onclick="addC()">+ Tambah mata kuliah</button>
+<div class="g2"><div><label>IPK sebelumnya (opsional)</label><input type="number" id="i_pk" step="0.01" max="4" oninput="ipk()"></div><div><label>Total SKS sebelumnya</label><input type="number" id="i_ps" oninput="ipk()"></div></div>
+<p class="hint">Skala: A=4, A-=3,75, B+=3,25, B=3, B-=2,75, C+=2,25, C=2, D=1, E=0. Skala tiap kampus bisa berbeda.</p></div>
+<div class="stack"><div class="card res" id="ipkR"></div><div class="card"><h2>🎯 Target IPK</h2><div class="g2"><div><label>Target IPK akhir</label><input type="number" id="i_t" value="3.5" step="0.01" oninput="ipk()"></div><div><label>SKS yang tersisa</label><input type="number" id="i_sisa" value="60" oninput="ipk()"></div></div><div class="hint" id="ipkT"></div></div></div></div></section>
+</div>
+<script>
+const $=i=>document.getElementById(i),N=i=>parseFloat($(i).value)||0,pad=n=>String(n).padStart(2,'0');
+const rp=n=>(n<0?'−':'')+'Rp '+Math.round(Math.abs(n)).toLocaleString('id-ID'),nf=(n,d=2)=>n.toLocaleString('id-ID',{maximumFractionDigits:d});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kv=a=>a.map(r=>`<div class="kv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+const TABS=[['loan','💳 Cicilan'],['date','📅 Tanggal'],['disc','🏷️ Diskon & Persen'],['conv','📐 Konversi'],['ipk','🎓 IPK']];
+$('tabs').innerHTML=TABS.map(t=>`<button id="b-${t[0]}" onclick="show('${t[0]}')">${t[1]}</button>`).join('');
+function show(t){TABS.forEach(x=>{$('t-'+x[0]).classList.toggle('on',x[0]===t);$('b-'+x[0]).classList.toggle('on',x[0]===t)})}
+/* cicilan */
+function loan(){const P=N('l_p'),r=N('l_b')/1200,n=Math.max(1,Math.round(N('l_n'))),flat=$('l_m').value==='flat';
+ if(P<=0){$('loanR').innerHTML='<small>Isi jumlah pinjaman</small>';$('loanT').innerHTML='';return}
+ let a,s=P,tb=0;const rows=[];
+ if(flat){const b=P*r,pk=P/n;a=pk+b;for(let i=1;i<=n;i++){s-=pk;rows.push([i,a,pk,b,Math.max(0,s)])}tb=b*n}
+ else{a=r?P*r/(1-Math.pow(1+r,-n)):P/n;for(let i=1;i<=n;i++){const b=s*r,pk=a-b;s-=pk;tb+=b;rows.push([i,a,pk,b,Math.max(0,s)])}}
+ $('loanR').innerHTML=`<small>Angsuran per bulan</small><div class="big">${rp(a)}</div><div class="bar"><i style="width:${P/(P+tb)*100}%"></i></div><small>Pokok ${nf(P/(P+tb)*100,1)}% · Bunga ${nf(tb/(P+tb)*100,1)}%</small>`+kv([['Pokok pinjaman',rp(P)],['Total bunga',rp(tb)],['Total pembayaran',rp(P+tb)],['Lama cicilan',n+' bulan ('+nf(n/12,1)+' tahun)']]);
+ $('loanT').innerHTML='<table><thead><tr><th>Bln</th><th>Angsuran</th><th>Pokok</th><th>Bunga</th><th>Sisa</th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${x[0]}</td><td>${rp(x[1])}</td><td>${rp(x[2])}</td><td>${rp(x[3])}</td><td>${rp(x[4])}</td></tr>`).join('')+'</tbody></table>'}
+/* tanggal */
+const MB=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],HR=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],DAY=864e5;
+const U=s=>{const a=s.split('-');return Date.UTC(+a[0],+a[1]-1,+a[2])},ds=t=>{const d=new Date(t);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())};
+const todayS=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const dstr=t=>{const d=new Date(t);return HR[d.getUTCDay()]+', '+d.getUTCDate()+' '+MB[d.getUTCMonth()]+' '+d.getUTCFullYear()};
+function ymd3(a,b){const A=new Date(a),B=new Date(b);let m0=(B.getUTCFullYear()-A.getUTCFullYear())*12+B.getUTCMonth()-A.getUTCMonth();if(B.getUTCDate()<A.getUTCDate())m0--;const y=A.getUTCFullYear(),mo=A.getUTCMonth()+m0,dim=new Date(Date.UTC(y,mo+1,0)).getUTCDate(),anchor=Date.UTC(y,mo,Math.min(A.getUTCDate(),dim));return[Math.floor(m0/12),m0%12,Math.round((b-anchor)/DAY)]}
+function age(){const v=$('d_lahir').value;if(!v){$('ageR').innerHTML='<p class="hint" style="padding:10px 0">Pilih tanggal lahir.</p>';return}
+ const b=U(v),t=U(todayS());if(b>t){$('ageR').innerHTML='<p class="hint" style="padding:10px 0">Tanggal lahir belum terjadi.</p>';return}
+ const x=ymd3(b,t),bd=new Date(b),yr=new Date(t).getUTCFullYear();let nx=Date.UTC(yr,bd.getUTCMonth(),bd.getUTCDate());if(nx<t)nx=Date.UTC(yr+1,bd.getUTCMonth(),bd.getUTCDate());
+ $('ageR').innerHTML=kv([['Umur',`<b>${x[0]} tahun ${x[1]} bulan ${x[2]} hari</b>`],['Total hari hidup',nf((t-b)/DAY,0)+' hari'],['Lahir hari',HR[bd.getUTCDay()]],['Ulang tahun berikutnya',nx===t?'Hari ini! 🎉':nf((nx-t)/DAY,0)+' hari lagi'],['Jatuh pada',dstr(nx)]])}
+function diff(){let a=$('d_a').value,b=$('d_b').value;if(!a||!b){$('diffR').innerHTML='<p class="hint" style="padding:10px 0">Pilih dua tanggal.</p>';return}
+ let A=U(a),B=U(b);if(A>B)[A,B]=[B,A];const days=(B-A)/DAY,x=ymd3(A,B);let wd=0;for(let t=A;t<B;t+=DAY){const g=new Date(t).getUTCDay();if(g&&g<6)wd++}
+ $('diffR').innerHTML=kv([['Selisih',`${x[0]} th ${x[1]} bln ${x[2]} hr`],['Total hari',nf(days,0)+' hari'],['Dalam minggu',Math.floor(days/7)+' minggu '+days%7+' hari'],['Hari kerja (Sen–Jum)',nf(wd,0)+' hari']])}
+function addd(){const c=$('d_c').value;if(!c){$('addR').innerHTML='<p class="hint" style="padding:10px 0">Pilih tanggal awal.</p>';return}
+ const t=U(c)+N('d_n')*+$('d_op').value*DAY;$('addR').innerHTML=kv([['Hasil',dstr(t)],['Format',ds(t)]])}
+/* diskon */
+function disc(){const p=N('s_p'),a=p*(1-N('s_d1')/100),b=a*(1-N('s_d2')/100),tax=b*N('s_ppn')/100;
+ $('discR').innerHTML=`<small>Harga akhir (termasuk PPN)</small><div class="big">${rp(b+tax)}</div>`+kv([['Harga awal',rp(p)],['Setelah diskon',rp(b)],['Hemat',rp(p-b)+(p?' ('+nf((1-b/p)*100,1)+'%)':'')],['PPN '+N('s_ppn')+'%',rp(tax)]])+`<p style="font-size:12px;opacity:.8;margin-top:10px">Diskon tambahan dihitung dari harga setelah diskon pertama.</p>`}
+function perc(){const x1=N('q_x1'),y1=N('q_y1'),x2=N('q_x2'),y2=N('q_y2'),a=N('q_x3'),b=N('q_y3');
+ $('q_r1').innerHTML=`${nf(x1,2)}% dari ${nf(y1,2)} = <b style="color:var(--ink)">${nf(x1*y1/100,4)}</b>`;
+ $('q_r2').innerHTML=y2?`${nf(x2,2)} adalah <b style="color:var(--ink)">${nf(x2/y2*100,4)}%</b> dari ${nf(y2,2)}`:'Y tidak boleh 0';
+ $('q_r3').innerHTML=a?`${b>=a?'Naik':'Turun'} <b style="color:${b>=a?'var(--ok)':'var(--bad)'}">${nf(Math.abs((b-a)/a*100),4)}%</b> (selisih ${nf(Math.abs(b-a),2)})`:'Nilai A tidak boleh 0'}
+function marg(){const m=N('m_b'),j=N('m_j'),u=j-m;$('margR').innerHTML=kv([['Untung per unit',`<span style="color:${u>=0?'var(--ok)':'var(--bad)'}">${rp(u)}</span>`],['Margin (dari harga jual)',j?nf(u/j*100,2)+'%':'–'],['Markup (dari modal)',m?nf(u/m*100,2)+'%':'–']]);
+ const t=N('m_t');$('margT').innerHTML=t<100?`Agar margin ${nf(t,1)}%, jual di <b style="color:var(--ink)">${rp(m/(1-t/100))}</b>`:'Margin harus di bawah 100%'}
+/* konversi */
+const UN={Panjang:{mm:.001,cm:.01,m:1,km:1000,inci:.0254,kaki:.3048,yard:.9144,mil:1609.344},Berat:{mg:1e-6,g:.001,kg:1,ton:1000,ons:.1,pon:.45359237},Volume:{ml:.001,'sdt (5 ml)':.005,'sdm (15 ml)':.015,cangkir:.24,liter:1,'galon AS':3.785411784,'m³':1000},Luas:{'cm²':1e-4,'m²':1,are:100,hektar:1e4,'km²':1e6,'kaki²':.09290304,acre:4046.8564224},Kecepatan:{'m/detik':1,'km/jam':1/3.6,mph:.44704,knot:.514444},Data:{bit:.125,byte:1,KB:1024,MB:1048576,GB:1073741824,TB:1099511627776},Waktu:{detik:1,menit:60,jam:3600,hari:86400,minggu:604800,'bulan (30 hr)':2592000,'tahun (365 hr)':31536000},Suhu:{'°C':1,'°F':1,'K':1}};
+const toC=(v,u)=>u==='°F'?(v-32)*5/9:u==='K'?v-273.15:v,fromC=(v,u)=>u==='°F'?v*9/5+32:u==='K'?v+273.15:v;
+const cv=(v,f,t,k)=>k==='Suhu'?fromC(toC(v,f),t):v*UN[k][f]/UN[k][t];
+const fN=x=>x===0?'0':(Math.abs(x)>=1e12||Math.abs(x)<1e-6)?x.toExponential(4).replace('.',','):x.toLocaleString('id-ID',{maximumSignificantDigits:10});
+function fillConv(){const k=$('c_k').value,o=Object.keys(UN[k]).map(u=>`<option>${esc(u)}</option>`).join('');$('c_f').innerHTML=o;$('c_t').innerHTML=o;$('c_t').selectedIndex=Math.min(2,Object.keys(UN[k]).length-1);if(k==='Suhu')$('c_t').selectedIndex=1;conv()}
+function conv(){const k=$('c_k').value,v=N('c_v'),f=$('c_f').value,t=$('c_t').value;$('convR').innerHTML=`<small>${fN(v)} ${esc(f)} =</small><div class="big">${fN(cv(v,f,t,k))} ${esc(t)}</div>`;
+ $('convT').innerHTML='<table><thead><tr><th>Satuan</th><th>Nilai</th></tr></thead><tbody>'+Object.keys(UN[k]).map(u=>`<tr><td>${esc(u)}</td><td>${fN(cv(v,f,u,k))}</td></tr>`).join('')+'</tbody></table>'}
+function swap(){const f=$('c_f').selectedIndex;$('c_f').selectedIndex=$('c_t').selectedIndex;$('c_t').selectedIndex=f;conv()}
+$('c_k').innerHTML=Object.keys(UN).map(k=>`<option>${k}</option>`).join('');
+/* IPK */
+const NIL={A:4,'A-':3.75,'B+':3.25,B:3,'B-':2.75,'C+':2.25,C:2,D:1,E:0};let CR=[['Matematika Dasar',3,'A'],['Algoritma',3,'B+'],['Basis Data',3,'A-'],['Bahasa Inggris',2,'B']].map(a=>({n:a[0],s:a[1],g:a[2]}));
+function drawC(){$('ipkRows').innerHTML=CR.map((c,i)=>`<div class="cr"><input value="${esc(c.n)}" placeholder="Mata kuliah" oninput="CR[${i}].n=this.value"><input type="number" min="0" value="${c.s}" aria-label="SKS" oninput="CR[${i}].s=+this.value;ipk()"><select aria-label="Nilai" onchange="CR[${i}].g=this.value;ipk()">${Object.keys(NIL).map(g=>`<option ${g===c.g?'selected':''}>${g}</option>`).join('')}</select><button class="btn o sm" onclick="CR.splice(${i},1);drawC()" aria-label="Hapus">✕</button></div>`).join('');ipk()}
+function addC(){CR.push({n:'',s:3,g:'A'});drawC()}
+function ipk(){const s=CR.reduce((a,c)=>a+(+c.s||0),0),q=CR.reduce((a,c)=>a+(+c.s||0)*NIL[c.g],0),ips=s?q/s:0,ps=N('i_ps'),pk=N('i_pk'),ts=s+ps,cum=ts?(q+pk*ps)/ts:0;
+ const pr=x=>x>=3.51?'Dengan Pujian (Cum Laude)':x>=3?'Sangat Memuaskan':x>=2.75?'Memuaskan':x>=2?'Cukup':'Perlu ditingkatkan';
+ $('ipkR').innerHTML=`<small>${ps?'IPK kumulatif':'IPS semester ini'}</small><div class="big">${nf(ps?cum:ips,2)}</div>`+kv([['IPS semester ini',nf(ips,2)],['SKS semester ini',s],['Total SKS',ts],['Predikat',pr(ps?cum:ips)]]);
+ const sisa=N('i_sisa'),tg=N('i_t');if(!sisa){$('ipkT').textContent='Isi SKS yang tersisa.';return}const need=(tg*(ts+sisa)-cum*ts)/sisa;
+ $('ipkT').innerHTML=need>4?`Target ${nf(tg,2)} <b style="color:var(--bad)">tidak mungkin</b> tercapai, karena butuh rata-rata nilai ${nf(need,2)}.`:need<=0?`Target ${nf(tg,2)} sudah <b style="color:var(--ok)">aman</b> walau nilai sisa terendah.`:`Kamu butuh rata-rata nilai <b style="color:var(--ink)">${nf(need,2)}</b> di ${sisa} SKS tersisa agar IPK akhir ${nf(tg,2)}.`}
+/* init */
+$('d_a').value=todayS();$('d_b').value=ds(U(todayS())+30*DAY);$('d_c').value=todayS();
+show('loan');loan();age();diff();addd();disc();perc();marg();fillConv();drawC();
+</script></body></html>

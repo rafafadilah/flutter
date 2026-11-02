@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapStudio — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#191919;--muted:#777;--line:#e8e7e4;--paper:#faf9f6;--accent:#c6f36a}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
+.page{min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr;padding:18px;gap:18px}
+.visual{position:relative;min-height:calc(100vh - 36px);border-radius:18px;overflow:hidden;background:#333}
+.visual img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.visual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.62))}
+.brand{position:absolute;z-index:1;top:28px;left:30px;color:white;font:800 22px Manrope;letter-spacing:-1px}.brand span{color:var(--accent)}
+.photo-caption{position:absolute;z-index:1;bottom:34px;left:34px;right:34px;color:white}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.photo-caption h2{font:700 clamp(28px,3vw,44px)/1.12 Manrope;letter-spacing:-1.5px;margin:12px 0}
+.photo-caption p{color:#e6e6e6;max-width:380px;line-height:1.6;font-size:14px}
+.form-side{display:flex;align-items:center;justify-content:center;padding:30px}
+.form-wrap{width:min(100%,420px)}
+.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:58px;font-size:13px;color:var(--muted)}
+.topline a{color:var(--ink);text-decoration:none;font-weight:600}
+h1{font:800 34px/1.15 Manrope;letter-spacing:-1.5px;margin:0 0 10px}
+.subtitle{font-size:14px;color:var(--muted);margin:0 0 32px;line-height:1.6}
+label{display:block;font-size:12px;font-weight:700;margin:0 0 9px}
+.field{margin-bottom:19px}
+input{width:100%;height:49px;border:1px solid var(--line);border-radius:9px;background:white;padding:0 14px;font:14px 'DM Sans';outline:none;transition:border .15s}
+input:focus{border-color:#777}
+.password-wrap{position:relative}.password-wrap input{padding-right:65px}
+.show{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:11px;font-weight:700;color:#666;cursor:pointer}
+.options{display:flex;justify-content:space-between;align-items:center;margin:2px 0 25px;font-size:12px}
+.remember{display:flex;align-items:center;gap:8px;color:#555}.remember input{width:14px;height:14px;accent-color:#191919}
+.options a,.signup a{color:var(--ink);font-weight:700;text-decoration:none}
+.submit{width:100%;height:50px;border:0;border-radius:9px;background:var(--ink);color:white;font:700 14px 'DM Sans';cursor:pointer}
+.submit:hover{background:#333}
+.divider{display:flex;align-items:center;gap:12px;color:#aaa;font-size:11px;margin:24px 0}.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
+.social{width:100%;height:47px;border:1px solid var(--line);background:white;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:10px;font:600 13px 'DM Sans';cursor:pointer}
+.signup{text-align:center;font-size:13px;color:var(--muted);margin-top:27px}
+.note{font-size:11px;color:#aaa;text-align:center;margin-top:45px}
+.message{display:none;background:#f0f7e4;border:1px solid #d9e9bd;color:#3e5921;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px}
+@media(max-width:800px){.page{grid-template-columns:1fr;padding:10px}.visual{min-height:300px;height:36vh}.photo-caption{left:22px;bottom:20px}.photo-caption h2{font-size:28px}.photo-caption p{display:none}.brand{left:22px;top:20px}.form-side{padding:26px 16px}.topline{margin-bottom:38px}.note{margin-top:30px}}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="visual" aria-label="Fotografi editorial">
+<img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=85" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=85';" alt="Fotografer mengambil foto dalam sesi editorial">
+<div class="brand">snap<span>.</span>studio</div>
+<div class="photo-caption"><div class="eyebrow">Your moments, beautifully captured</div><h2>Every frame<br>has a story.</h2><p>Temukan fotografer dan abadikan momen berharga dengan cara yang paling personal.</p></div>
+</section>
+<section class="form-side">
+<div class="form-wrap" id="loginView">
+<div class="topline"><span>Welcome back</span><a href="#">← Kembali ke beranda</a></div>
+<h1>Masuk ke akun</h1><p class="subtitle">Kelola booking, temukan fotografer, dan simpan momen favoritmu.</p>
+<div class="message" id="message">Demo login berhasil. Selamat datang di SnapStudio!</div>
+<form id="loginForm">
+<div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="nama@email.com" required></div>
+<div class="field"><label for="password">Password</label><div class="password-wrap"><input id="password" type="password" placeholder="Masukkan password" required minlength="6"><button class="show" type="button" id="toggle">LIHAT</button></div></div>
+<div class="options"><label class="remember"><input type="checkbox"> Ingat saya</label><a href="#" id="forgot">Lupa password?</a></div>
+<button class="submit" type="submit">Masuk ke SnapStudio ↗</button>
+</form>
+<div class="divider">atau masuk dengan</div>
+<button class="social" id="google"><strong>G</strong> Lanjutkan dengan Google</button>
+<p class="signup">Belum punya akun? <a href="#" id="register">Daftar sekarang</a></p>
+<div class="note">© 2026 SnapStudio · Capture what matters.</div>
+</div>
+<div id="dashboard" style="display:none;width:min(100%,760px);padding:12px 0">
+  <div class="topline"><span>snap<span style="color:#8a9e54">.</span>studio</span><a href="#" id="logout">Keluar ↗</a></div>
+  <div class="eyebrow" style="color:#788c43">FIND YOUR PHOTOGRAPHER</div>
+  <h1 style="margin-top:10px">Abadikan momen<br>yang berarti.</h1>
+  <p class="subtitle">Pilih fotografer dan paket yang paling sesuai dengan ceritamu.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+    <article style="background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <img style="width:100%;height:145px;object-fit:cover" src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=700&q=80" alt="Sesi foto pasangan">
+      <div style="padding:15px"><small style="color:#888">01 · COUPLE</small><h3 style="margin:7px 0">Couple Session</h3><p style="font-size:12px;color:#777">Sesi foto romantis untuk mengabadikan cerita kalian.</p><strong>Mulai Rp750.000</strong><button class="submit book" style="margin-top:13px;height:42px">Lihat paket</button></div>
+    </article>
+    <article style="background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <img style="width:100%;height:145px;object-fit:cover" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=700&q=80" alt="Fotografi pernikahan">
+      <div style="padding:15px"><small style="color:#888">02 · WEDDING</small><h3 style="margin:7px 0">Wedding Moments</h3><p style="font-size:12px;color:#777">Dokumentasi hari istimewa dengan penuh detail.</p><strong>Mulai Rp2.500.000</strong><button class="submit book" style="margin-top:13px;height:42px">Lihat paket</button></div>
+    </article>
+    <article style="background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <img style="width:100%;height:145px;object-fit:cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80'" alt="Portrait photography">
+      <div style="padding:15px"><small style="color:#888">03 · PORTRAIT</small><h3 style="margin:7px 0">Portrait Studio</h3><p style="font-size:12px;color:#777">Potret personal, profesional, atau kreatif.</p><strong>Mulai Rp350.000</strong><button class="submit book" style="margin-top:13px;height:42px">Lihat paket</button></div>
+    </article>
+  </div>
+  <p class="note">© 2026 SnapStudio · Capture what matters.</p>
+</div>
+</section>
+</main>
+<script>
+const password=document.getElementById('password');
+document.getElementById('toggle').addEventListener('click',function(){const visible=password.type==='password';password.type=visible?'text':'password';this.textContent=visible?'SEMBUNYIKAN':'LIHAT';});
+document.getElementById('loginForm').addEventListener('submit',function(e){e.preventDefault();document.getElementById('loginView').style.display='none';document.getElementById('dashboard').style.display='block';window.scrollTo(0,0);});
+document.getElementById('logout').addEventListener('click',function(e){e.preventDefault();document.getElementById('dashboard').style.display='none';document.getElementById('loginView').style.display='block';});
+document.querySelectorAll('.book').forEach(btn=>btn.addEventListener('click',()=>alert('Detail paket dan booking akan dikembangkan pada halaman berikutnya.')));
+document.getElementById('forgot').addEventListener('click',e=>{e.preventDefault();alert('Fitur reset password akan tersedia setelah sistem backend terhubung.');});
+document.getElementById('register').addEventListener('click',e=>{e.preventDefault();alert('Halaman daftar dapat ditambahkan pada tahap berikutnya.');});
+document.getElementById('google').addEventListener('click',()=>alert('Login Google merupakan tampilan demo dan belum terhubung ke OAuth.'));
+</script>
+</body>
+</html>
